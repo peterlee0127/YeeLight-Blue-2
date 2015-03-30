@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+  <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+        function updateInfo(color) {
+          var r = document.getElementById('info-r').value = color.rgb[0];
+          var g = document.getElementById('info-g').value = color.rgb[1];
+          var b = document.getElementById('info-b').value = color.rgb[2];
+          socket.emit('changeColor', [parseInt(r*255),parseInt(g*255),parseInt(b*255)]);
+        }
+    </script>
+    <title>YeeLight Blue 2 Control</title>
+  </head>
+  <body>
+  <script type="text/javascript" src="web/js/jscolor/jscolor.js"></script>
+
+      Color: <input class="color {onImmediateChange:'updateInfo(this);'}" value="66ff00">
+      R: <input id="info-r" size="6" />,
+      G: <input id="info-g" size="6" />,
+      B: <input id="info-b" size="6" />
+
+  </body>
+</html>
