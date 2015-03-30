@@ -80,6 +80,5 @@ function controlLight(characteristics,red,green,blue,brightness){
    }
   characteristics.write(new Buffer(command), false, function(error) {
     if(error){console.log(error);return;}
-      // console.log('successful');
   });
 }

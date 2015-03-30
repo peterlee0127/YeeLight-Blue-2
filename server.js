@@ -3,6 +3,9 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var yeelight = require('./ble.js');
+require('events').EventEmitter.prototype._maxListeners = 40;
+app.setMaxListeners(0);
+io.sockets.setMaxListeners(0);
 
 app.use(express.static(__dirname, '/web'));
 
@@ -10,7 +13,7 @@ io.on('connection', function(socket){
   // console.log('a user connected');
   socket.on('changeColor',function(data,error){
     if(error){console.log(error);return;}
-      yeelight.changeColor(data[0],data[1],data[2],100);
+      yeelight.changeColor(data[0],data[1],data[2],data[3]);
   });
 
   socket.on('disconnect', function(){

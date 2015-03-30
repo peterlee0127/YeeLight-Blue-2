@@ -8,22 +8,49 @@
   <script type="text/javascript" src="web/js/jscolor/jscolor.js"></script>
     <script>
         var socket = io();
-        function updateInfo(color) {
-          var r = document.getElementById('info-r').value = color.rgb[0];
-          var g = document.getElementById('info-g').value = color.rgb[1];
-          var b = document.getElementById('info-b').value = color.rgb[2];
-          socket.emit('changeColor', [parseInt(r*255),parseInt(g*255),parseInt(b*255)]);
+        function hexToRgb(hex) {
+            // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+            var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+            hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+                return r + r + g + g + b + b;
+            });
+
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
         }
+
+        function On(){
+          socket.emit('changeColor', [255,255,255,100]);
+        }
+        function Off(){
+          socket.emit('changeColor', [255,255,255,0]);
+        }
+        function apply() {
+             var color = document.getElementById('color').value;
+             var r = hexToRgb(color).r;
+             var g = hexToRgb(color).g;
+             var b = hexToRgb(color).b;
+             socket.emit('changeColor', [parseInt(r),parseInt(g),parseInt(b),100]);
+        }
+
     </script>
     <title>YeeLight Blue 2 Control</title>
   </head>
   <body>
       <br><br>
-
-      Color: <input class="color {onImmediateChange:'updateInfo(this);'}" value="66ff00">
-      R: <input id="info-r" size="6" />,
-      G: <input id="info-g" size="6" />,
-      B: <input id="info-b" size="6" />
+      <div class="row">
+          <div class="col-md-4 col-md-offset-5">
+            Color: <input id="color" class="color" value="66ff00">
+            <button type="button" class="btn btn-success btn-lg" onClick="apply()">Apply</button>
+            <br><br>
+            <button type="button" class="btn btn-success btn-lg" onClick="On()">On</button>
+            <button type="button" class="btn btn-danger btn-lg" onClick="Off()">Off</button>
+          </div>
+    </div>
 
   </body>
 </html>
