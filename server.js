@@ -15,6 +15,10 @@ io.on('connection', function(socket){
     if(error){console.log(error);return;}
       yeelight.changeColor(data[0],data[1],data[2],data[3]);
   });
+  socket.on('Party',function(data,error){
+    if(error){console.log(error);return;}
+      yeelight.randomColor();
+  });
 
   socket.on('disconnect', function(){
     // console.log('user disconnected');

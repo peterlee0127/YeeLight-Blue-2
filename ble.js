@@ -43,11 +43,14 @@ noble.on('discover', function(peripheral) {
 
 exports.randomColor = function randomColor(){
   currentDevices=allDevices;
+  var r = Math.floor((Math.random() * 255) + 1);
+  var g = Math.floor((Math.random() * 255) + 1);
+  var b = Math.floor((Math.random() * 255) + 1);
   for(var index in currentDevices){
     setTimeout(function () {
-      controlLight(currentDevices[index],Math.floor((Math.random() * 255) + 1),Math.floor((Math.random() * 255) + 1),Math.floor((Math.random() * 255) + 1),100);
+      controlLight(currentDevices[index],r,g,b,100);
       randomColor();
-    }, 200);
+    }, 1000);
   }
 };
 

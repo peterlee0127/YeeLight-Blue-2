@@ -14,7 +14,6 @@
             hex = hex.replace(shorthandRegex, function(m, r, g, b) {
                 return r + r + g + g + b + b;
             });
-
             var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             return result ? {
                 r: parseInt(result[1], 16),
@@ -22,12 +21,14 @@
                 b: parseInt(result[3], 16)
             } : null;
         }
-
         function On(){
           socket.emit('changeColor', [255,255,255,100]);
         }
         function Off(){
           socket.emit('changeColor', [255,255,255,0]);
+        }
+        function Party(){
+          socket.emit('Party',[]);
         }
         function apply() {
              var color = document.getElementById('color').value;
@@ -46,6 +47,8 @@
           <div class="col-md-4 col-md-offset-5">
             Color: <input id="color" class="color" value="66ff00">
             <button type="button" class="btn btn-success btn-lg" onClick="apply()">Apply</button>
+            <br><br>
+            <button type="button" class="btn btn-warning btn-lg" onClick="Party()">Party</button>
             <br><br>
             <button type="button" class="btn btn-success btn-lg" onClick="On()">On</button>
             <button type="button" class="btn btn-danger btn-lg" onClick="Off()">Off</button>
