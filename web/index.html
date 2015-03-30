@@ -2,6 +2,10 @@
 <html>
   <head>
   <script src="/socket.io/socket.io.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="web/js/jscolor/jscolor.js"></script>
     <script>
         var socket = io();
         function updateInfo(color) {
@@ -14,7 +18,7 @@
     <title>YeeLight Blue 2 Control</title>
   </head>
   <body>
-  <script type="text/javascript" src="web/js/jscolor/jscolor.js"></script>
+      <br><br>
 
       Color: <input class="color {onImmediateChange:'updateInfo(this);'}" value="66ff00">
       R: <input id="info-r" size="6" />,
