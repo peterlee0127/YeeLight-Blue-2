@@ -15,6 +15,14 @@ io.on('connection', function(socket){
     if(error){console.log(error);return;}
       yeelight.changeColor(data[0],data[1],data[2],data[3]);
   });
+  socket.on('TurnOn',function(data,error){
+    if(error){console.log(error);return;}
+      yeelight.TurnOn();
+  });
+  socket.on('TurnOff',function(data,error){
+    if(error){console.log(error);return;}
+      yeelight.TurnOff();
+  });
   socket.on('Party',function(data,error){
     if(error){console.log(error);return;}
       yeelight.randomColor();

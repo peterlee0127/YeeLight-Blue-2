@@ -21,11 +21,11 @@
                 b: parseInt(result[3], 16)
             } : null;
         }
-        function On(){
-          socket.emit('changeColor', [255,255,255,100]);
+        function TurnOn(){
+          socket.emit('TurnOn', null);
         }
-        function Off(){
-          socket.emit('changeColor', [255,255,255,0]);
+        function TurnOff(){
+          socket.emit('TurnOff', null);
         }
         function Party(){
           socket.emit('Party',[]);
@@ -50,8 +50,8 @@
             <br><br>
             <button type="button" class="btn btn-warning btn-lg" onClick="Party()">Party</button>
             <br><br>
-            <button type="button" class="btn btn-success btn-lg" onClick="On()">On</button>
-            <button type="button" class="btn btn-danger btn-lg" onClick="Off()">Off</button>
+            <button type="button" class="btn btn-success btn-lg" onClick="TurnOn()">On</button>
+            <button type="button" class="btn btn-danger btn-lg" onClick="TurnOff()">Off</button>
           </div>
     </div>
 
