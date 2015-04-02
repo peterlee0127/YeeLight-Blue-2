@@ -61,6 +61,7 @@ exports.disConnectAll = function disConnectAll(){
       });
     }
     numberOfYeelights = 0;
+    allDevices = [];
 };
 
 
