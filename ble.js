@@ -1,5 +1,6 @@
 var noble = require('noble');
 var util = require('util');
+var server = require('./server.js')
 
 var SERVICE_UUID                = 'fff0';  // for yeeLight service
 
@@ -26,33 +27,44 @@ var allServices = [  CONTROL_UUID,
                   LED_NAME_RESPONSE_UUID,
                   EFFECT_UUID             ];
 
-noble.on('stateChange', function(state) {
-  if (state === 'poweredOn') {
-    noble.startScanning([SERVICE_UUID]);
-  } else {
-    noble.stopScanning();
-  }
-});
+var numberOfYeelights = 0;
+exports.numberOfYeelights = numberOfYeelights;
 
-noble.on('discover', function(peripheral) {
-  var macAddress = peripheral.uuid;
-  // var rss = peripheral.rssi;
-  var localName = peripheral.advertisement.localName;
-    peripheral.connect(function(error){
-        if(error){console.log(error);}
-        console.log('Connected:', localName," Address:",macAddress);
-        peripheral.discoverServices([SERVICE_UUID], function(error, services) {
-            var deviceInformationService = services[0];
-            deviceInformationService.discoverCharacteristics(allServices, function(error, characteristics) {
-                  // for (var i in characteristics) {
-                    if(characteristics[0].uuid==CONTROL_UUID){
-                        allDevices.push(characteristics[0]);
-                    } // is CONTROL_UUID
-                  // }
-            });
-        });
-    });
-});
+exports.startDiscover = function startDiscover(){
+  noble.startScanning([SERVICE_UUID]);
+  noble.on('discover', function(peripheral) {
+    var macAddress = peripheral.uuid;// var rss = peripheral.rssi;
+    var localName = peripheral.advertisement.localName;
+      peripheral.connect(function(error){
+          if(error){console.log(error);}
+          peripheral.discoverServices([SERVICE_UUID], function(error, services) {
+              var deviceInformationService = services[0];
+              deviceInformationService.discoverCharacteristics(allServices, function(error, characteristics) {
+                    // for (var i in characteristics) {
+                      if(characteristics[0].uuid==CONTROL_UUID){
+                          numberOfYeelights++;
+                          server.numberOfYeelightsChanges(numberOfYeelights);
+                          allDevices.push(characteristics[0]);
+                      } // is CONTROL_UUID
+                    // }
+              });
+          });
+      });
+  });
+};
+
+
+exports.disConnectAll = function disConnectAll(){
+    for (var index in noble._peripherals){
+      noble._peripherals[index].disconnect(function(err){
+          if(err){console.log(err); }
+      });
+    }
+    numberOfYeelights = 0;
+};
+
+
+
 
 exports.randomColor = function randomColor(){
 

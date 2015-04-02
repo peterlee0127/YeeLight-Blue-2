@@ -8,6 +8,10 @@
   <script type="text/javascript" src="web/js/jscolor/jscolor.js"></script>
     <script>
         var socket = io();
+        socket.on('numberOfYeelights', function(msg){
+            console.log(msg);
+            document.getElementById('numberOfYeelights').innerHTML = msg;
+        });
         function hexToRgb(hex) {
             // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
             var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -45,6 +49,8 @@
       <br><br>
       <div class="row">
           <div class="col-md-4 col-md-offset-5">
+            You have <div id="numberOfYeelights">0</div> Yeelights Connected
+            <br><br>
             Color: <input id="color" class="color" value="66ff00">
             <button type="button" class="btn btn-success btn-lg" onClick="apply()">Apply</button>
             <br><br>
