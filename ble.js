@@ -16,16 +16,16 @@ var LED_NAME_RESPONSE_UUID      = 'fff9';  // notify the name of LED
 var EFFECT_UUID                 = 'fffc';  // set the effect of color change
 
 var allDevices = [];
-var allServices = [  CONTROL_UUID,
-                  DELAY_UUID,
-                  DELAY_STATUS_QUERY_UUID,
-                  DELAY_STATUS_RESPONSE_UUID,
-                  STATUS_QUERY_UUID_UUID,
-                  STATUS_RESPONSE_UUID,
-                  COLORFLOW_UUID,
-                  LED_NAME_UUID,
-                  LED_NAME_RESPONSE_UUID,
-                  EFFECT_UUID             ];
+var allServices = [ CONTROL_UUID,
+                    DELAY_UUID,
+                    DELAY_STATUS_QUERY_UUID,
+                    DELAY_STATUS_RESPONSE_UUID,
+                    STATUS_QUERY_UUID_UUID,
+                    STATUS_RESPONSE_UUID,
+                    COLORFLOW_UUID,
+                    LED_NAME_UUID,
+                    LED_NAME_RESPONSE_UUID,
+                    EFFECT_UUID             ];
 
 var numberOfYeelights = 0;
 exports.numberOfYeelights = numberOfYeelights;
@@ -40,13 +40,13 @@ exports.startDiscover = function startDiscover(){
           peripheral.discoverServices([SERVICE_UUID], function(error, services) {
               var deviceInformationService = services[0];
               deviceInformationService.discoverCharacteristics(allServices, function(error, characteristics) {
-                    // for (var i in characteristics) {
-                      if(characteristics[0].uuid==CONTROL_UUID){
-                          numberOfYeelights++;
-                          server.numberOfYeelightsChanges(numberOfYeelights);
-                          allDevices.push(characteristics[0]);
-                      } // is CONTROL_UUID
-                    // }
+                    var device = [];
+                    for (var i in characteristics) {
+                        device.push(characteristics[i]);
+                    }
+                    allDevices.push(device);
+                    numberOfYeelights++;
+                    server.numberOfYeelightsChanges(numberOfYeelights);
               });
           });
       });
@@ -65,6 +65,13 @@ exports.disConnectAll = function disConnectAll(){
 };
 
 
+function findForCharacters(characters,Service_UUID){
+  for(index in characters){
+    if(characters[index].uuid==Service_UUID){
+        return characters[index];
+    }
+  }
+};
 
 
 exports.randomColor = function randomColor(){
@@ -73,21 +80,24 @@ exports.randomColor = function randomColor(){
 
 exports.TurnOn = function turnOn(){
   for(var index in allDevices){
-    controlLight(allDevices[index],255,255,255,100);
+      var chcharacter=findForCharacters(allDevices[index],CONTROL_UUID);
+      controlLight(chcharacter,255,255,255,100);
   }
 };
 
 
 exports.TurnOff = function turnOff(){
   for(var index in allDevices){
-    controlLight(allDevices[index],null,null,null,0);
+      var chcharacter=findForCharacters(allDevices[index],CONTROL_UUID);
+      controlLight(chcharacter,null,null,null,0);
   }
 };
 
 
 exports.changeColor = function changeColor(red,green,blue,brightness){
   for(var index in allDevices){
-    controlLight(allDevices[index],red,green,blue,brightness);
+    var chcharacter=findForCharacters(allDevices[index],CONTROL_UUID);
+    controlLight(chcharacter,red,green,blue,brightness);
   }
 };
 

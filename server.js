@@ -20,8 +20,12 @@ exports.numberOfYeelightsChanges = function(numberOfYeelights){
 function disConnect(){
   setTimeout(function(){
     if(numberOfUsersOnline===0){
-      yeelight.disConnectAll();
-      console.log('no user online');
+      setTimeout(function(){
+        if(numberOfUsersOnline===0){
+          yeelight.disConnectAll();
+          console.log('no user online');
+        }
+      }, 1000);
     }
   }, 3000);
 }
