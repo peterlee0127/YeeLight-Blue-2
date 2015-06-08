@@ -11,6 +11,9 @@
         socket.on('numberOfYeelights', function(msg){
             document.getElementById('numberOfYeelights').innerHTML = msg;
         });
+        socket.on('disconnect',function() {
+            document.getElementById('numberOfYeelights').innerHTML = 0;
+        });
         function hexToRgb(hex) {
             // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
             var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -33,12 +36,17 @@
         function Party(){
           socket.emit('Party',[]);
         }
+        var currentColor;
         function apply() {
              var color = document.getElementById('color').value;
              var r = hexToRgb(color).r;
              var g = hexToRgb(color).g;
              var b = hexToRgb(color).b;
-             socket.emit('changeColor', [parseInt(r),parseInt(g),parseInt(b),100]);
+             console.log(r,g,b);
+             if(color != currentColor){
+                socket.emit('changeColor', [parseInt(r),parseInt(g),parseInt(b),100]);
+                currentColor = color;
+             }
         }
 
     </script>
@@ -50,7 +58,7 @@
           <div class="col-md-4 col-md-offset-5">
             You have <div id="numberOfYeelights">0</div> Yeelights Connected
             <br><br>
-            Color: <input id="color" class="color" value="66ff00">
+            Color: <input id="color" class="color {onImmediateChange:'apply(this);'}" value="66ff00">
             <button type="button" class="btn btn-success btn-lg" onClick="apply()">Apply</button>
             <br><br>
             <button type="button" class="btn btn-warning btn-lg" onClick="Party()">Party</button>

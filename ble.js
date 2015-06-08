@@ -1,6 +1,8 @@
 var noble = require('noble');
 var util = require('util');
-var server = require('./server.js')
+var server = require('./server.js');
+
+
 
 var SERVICE_UUID                = 'fff0';  // for yeeLight service
 
@@ -30,7 +32,8 @@ var allServices = [ CONTROL_UUID,
 var numberOfYeelights = 0;
 exports.numberOfYeelights = numberOfYeelights;
 
-exports.startDiscover = function startDiscover(){
+
+function startDiscover(){
   noble.startScanning([SERVICE_UUID]);
   noble.on('discover', function(peripheral) {
     var macAddress = peripheral.uuid;// var rss = peripheral.rssi;
@@ -47,12 +50,34 @@ exports.startDiscover = function startDiscover(){
                     allDevices.push(device);
                     numberOfYeelights++;
                     server.numberOfYeelightsChanges(numberOfYeelights);
+                    /*
+                    var readChar=findForCharacters(device,STATUS_RESPONSE_UUID);
+                    readChar.read(function(error, data) {
+                      // data is a buffer
+                        if(error){console.log(error); }
+                        if(data) {console.log(data);  	}
+                    });
+                    readChar.on('read', function(data, isNotification) {
+                      if(data != undefined){
+                      	 console.log('current setting:', data + '%');
+                      }
+                    });
+                    readChar.notify(true, function(error) {
+                        if(error){
+                	     	 	 console.log(error);
+                        }
+                    });
+                    var queryChar=findForCharacters(device,STATUS_QUERY_UUID_UUID);
+                    queryChar.write(new Buffer('S'), false, function(error) {
+                      if(error){console.log(error);}
+                    });
+                    */
               });
           });
       });
   });
-};
-
+}
+exports.startDiscover = startDiscover;
 
 exports.disConnectAll = function disConnectAll(){
     for (var index in noble._peripherals){
@@ -80,8 +105,18 @@ exports.randomColor = function randomColor(){
 
 exports.TurnOn = function turnOn(){
   for(var index in allDevices){
+    
       var chcharacter=findForCharacters(allDevices[index],CONTROL_UUID);
       controlLight(chcharacter,255,255,255,100);
+//     var command = util.format('%d,%d,%d,%d', red, green, blue, brightness);
+//     for (var j = command.length; j < 18; j++) {
+//       command += ',';
+//     }
+//    chcharacter.write(new Buffer("CLTMP 6500,45,,,,,,%"), false, function(error) {
+//      if(error){console.log(error);}
+//    });
+
+      //CLTMP 6500,45,,,,,,%
   }
 };
 

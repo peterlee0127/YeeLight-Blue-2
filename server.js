@@ -3,9 +3,10 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var yeelight = require('./ble.js');
-// require('events').EventEmitter.prototype._maxListeners = 200;
+ require('events').EventEmitter.prototype._maxListeners = 0
 app.setMaxListeners(0);
 io.sockets.setMaxListeners(0);
+
 
 app.use(express.static(__dirname, '/web'));
 
@@ -36,7 +37,7 @@ io.on('connection', function(socket){
   if(numberOfUsersOnline>0){
     setTimeout(function(){
       yeelight.startDiscover();
-    }, 1000);
+    }, 50);
   }
   socket.on('disconnect', function(){
       numberOfUsersOnline--;
