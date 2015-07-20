@@ -7,8 +7,7 @@ var yeelight = require('./ble.js');
 app.setMaxListeners(0);
 io.sockets.setMaxListeners(0);
 
-
-app.use(express.static(__dirname, '/web'));
+app.use(express.static(__dirname + '/web'));
 
 var numberOfUsersOnline = 0;
 var connectedYeelights = 0;
