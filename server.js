@@ -3,7 +3,8 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var yeelight = require('./ble.js');
- require('events').EventEmitter.prototype._maxListeners = 0
+
+require('events').EventEmitter.prototype._maxListeners = 0
 app.setMaxListeners(0);
 io.sockets.setMaxListeners(0);
 
@@ -13,8 +14,8 @@ var numberOfUsersOnline = 0;
 var connectedYeelights = 0;
 
 exports.numberOfYeelightsChanges = function(numberOfYeelights){
-  connectedYeelights=numberOfYeelights;
-  io.emit('numberOfYeelights',numberOfYeelights);
+    connectedYeelights=numberOfYeelights;
+    io.emit('numberOfYeelights',numberOfYeelights);
 };
 
 function disConnect(){

@@ -37,8 +37,11 @@ var allServices = [ CONTROL_UUID,
         noble.startScanning([SERVICE_UUID]); 
         noble.on('discover', function(peripheral) { 
             var macAddress = peripheral.uuid;// var rss = peripheral.rssi; 
-            var localName = peripheral.advertisement.localName; 
-            setTimeout(function(){                                 
+            var localName = peripheral.advertisement.localName;           
+            if(localName!="Yeelight Blue II") {
+                return
+            }
+            setTimeout(function(){            
                 peripheral.connect(function(error){ 
                     if(error){console.log(error);} 
                     peripheral.discoverServices([SERVICE_UUID], function(error, services) { 
@@ -51,8 +54,16 @@ var allServices = [ CONTROL_UUID,
                             allDevices.push(device); 
                             numberOfYeelights++; 
                             server.numberOfYeelightsChanges(numberOfYeelights); 
-                            /* 
-                               var readChar=findForCharacters(device,STATUS_RESPONSE_UUID); 
+                   
+                        }); 
+                    }); 
+                });   
+            },300);
+        }); 
+    }
+    
+             /* 
+                             var readChar=findForCharacters(device,STATUS_RESPONSE_UUID); 
                                readChar.read(function(error, data) { 
                             // data is a buffer 
                             if(error){console.log(error); } 
@@ -73,11 +84,6 @@ var allServices = [ CONTROL_UUID,
                             if(error){console.log(error);} 
                             }); 
                             */ 
-                        }); 
-                    }); 
-                }); },300);
-        }); 
-    }
 
     exports.startDiscover = startDiscover;
 
