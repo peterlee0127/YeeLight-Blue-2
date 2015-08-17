@@ -28,7 +28,7 @@ function disConnect(){
         }
       }, 1000);
     }
-  }, 3000);
+  }, 1000);
 }
 
 io.on('connection', function(socket){
