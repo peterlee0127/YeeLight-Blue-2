@@ -31,9 +31,19 @@ var allServices = [ CONTROL_UUID,
 
     var numberOfYeelights = 0;
     exports.numberOfYeelights = numberOfYeelights;
-
-
+   
     function startDiscover(){ 
+        noble.on('stateChange', function(state) {
+        if (state === 'poweredOn')
+            discover()
+        else
+            noble.stopScanning();
+        });
+    }
+    exports.startDiscover = startDiscover;
+
+
+    function discover(){ 
         noble.startScanning([SERVICE_UUID]); 
         noble.on('discover', function(peripheral) { 
             var macAddress = peripheral.uuid;// var rss = peripheral.rssi; 
@@ -85,7 +95,7 @@ var allServices = [ CONTROL_UUID,
                             }); 
                             */ 
 
-    exports.startDiscover = startDiscover;
+
 
     exports.disConnectAll = function disConnectAll(){
         for (var index in noble._peripherals){
