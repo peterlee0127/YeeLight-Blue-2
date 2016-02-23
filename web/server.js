@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var yeelight = require('./ble.js');
+var yeelight = require('./../ble.js');
 
 require('events').EventEmitter.prototype._maxListeners = 0
 app.setMaxListeners(0);
