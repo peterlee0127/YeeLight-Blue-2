@@ -1,6 +1,6 @@
 var noble = require('noble');
 var util = require('util');
-var device = require('./YeeDevice.js');
+var yeeDevice = require('./YeeDevice.js');
 
 var SERVICE_UUID                = 'fff0';  // for yeeLight service
 
@@ -31,32 +31,45 @@ var allServices = [
 
 
 
-
-
-function startDiscover(){
+function startDiscover(devices){
     noble.on('stateChange', function(state) {
-    if (state === 'poweredOn')
-        discover()
-    else
-        noble.stopScanning();
+        if (state === 'poweredOn'){
+            discover(devices);
+        }
+        else{
+            noble.stopScanning();
+        }
     });
 }
 exports.startDiscover = startDiscover;
 
-function discover(){
+function discover(devices){
     noble.startScanning([SERVICE_UUID]);
     noble.on('discover', function(peripheral) {
-        var macAddress = peripheral.uuid;// var rss = peripheral.rssi;
-        var address = peripheral.address;
-        var localName = peripheral.advertisement.localName;
-        if(localName!="Yeelight Blue II") {return;}
-        connect(peripheral)
-        // console.dir(peripheral,{depth:null});
-
+        var count = devices.length;
+        for(var i = 0;i<count;i++) {
+            var device = devices[i];
+            var macAddress = peripheral.uuid;// var rss = peripheral.rssi;
+            var address = peripheral.address;
+            var localName = peripheral.advertisement.localName;
+            if(device.address==device.uuid) {
+                if(localName!="Yeelight Blue II") {
+                    return;
+                }
+                device.connectInfo = peripheral;
+                connect(device)
+            }
+        }
+        if(count==0) {
+            var macAddress = peripheral.uuid;// var rss = peripheral.rssi;
+            var localName = peripheral.advertisement.localName;
+            console.log(localName+"\tmacAddress:"+macAddress);
+        }
     });
 }
 
-function connect(peripheral) {
+function connect(device) {
+    var peripheral = device.connectInfo;
     setTimeout(function(){
         peripheral.connect(function(error){
             if(error){console.log(error);}
@@ -74,30 +87,31 @@ function connect(peripheral) {
     },300);
 }
 
-    /*
-    var readChar=findForCharacters(device,STATUS_RESPONSE_UUID);
-    readChar.read(function(error, data) {
-    // data is a buffer
-        if(error){console.log(error); }
-        if(data) {console.log(data); }
-    });
+/*
+var readChar=findForCharacters(device,STATUS_RESPONSE_UUID);
+readChar.read(function(error, data) {
+// data is a buffer
+    if(error){console.log(error); }
+    if(data) {console.log(data); }
+});
 
-    readChar.on('read', function(data, isNotification) {
-        if(data != undefined){
-            console.log('current setting:', data + '%');
-        }
-    });
+readChar.on('read', function(data, isNotification) {
+    if(data != undefined){
+        console.log('current setting:', data + '%');
+    }
+});
 
-    readChar.notify(true, function(error) {
-        if(error){
-            console.log(error);
-        }
-    });
-    var queryChar=findForCharacters(device,STATUS_QUERY_UUID_UUID);
-    queryChar.write(new Buffer('S'), false, function(error) {
-        if(error){console.log(error);}
-    });
-    */
+readChar.notify(true, function(error) {
+    if(error){
+        console.log(error);
+    }
+});
+var queryChar=findForCharacters(device,STATUS_QUERY_UUID_UUID);
+queryChar.write(new Buffer('S'), false, function(error) {
+    if(error){console.log(error);}
+});
+*/
+
 function findForCharacters(characters,Service_UUID){
     for(index in characters){
         if(characters[index].uuid==Service_UUID){

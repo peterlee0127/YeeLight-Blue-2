@@ -1,6 +1,7 @@
 var Yeelight = function(displayName, address) {
     this.displayName = displayName;
     this.address = address;
+    return this;
 }
 // properties and methods
 Yeelight.prototype = {
@@ -11,11 +12,7 @@ Yeelight.prototype = {
     color:[255,255,255], // red,green,blue
     brightness:0,
     connected:false,
-    ConnectInfo:[],
-
-    method: function() {
-        console.log(this.uuid);
-    }
+    connectInfo:Object,
 };
 // node.js module export
 module.exports = Yeelight;

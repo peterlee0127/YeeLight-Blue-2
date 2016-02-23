@@ -1,10 +1,9 @@
-var yeelight = require('./ble.js');
-var YeeDevice = require('./YeeDevice.js');
+var yeeLight = require('./ble.js');
+var yeeDevice = require('./YeeDevice.js');
 require('events').EventEmitter.prototype._maxListeners = 0
 
 
-var firstLight = YeeDevice("桌燈","54:4a:16:1f:a6:cd");
-// firstLight.method();
+var tableLight = yeeDevice("桌燈","54:4a:16:1f:a6:cd");
 // firstLight.();
 
-yeelight.startDiscover();
+yeeLight.startDiscover(tableLight);
