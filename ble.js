@@ -34,6 +34,10 @@ var allServices = [
 function startDiscover(devices){
     noble.on('stateChange', function(state) {
         if (state === 'poweredOn'){
+            if(!Array.isArray(devices)) {
+                console.log("please set startDiscover([])");
+                process.exit();
+            }
             discover(devices);
         }
         else{
@@ -43,27 +47,25 @@ function startDiscover(devices){
 }
 exports.startDiscover = startDiscover;
 
+// id: 'a2264730c31a41449de4e0114e4a386d',
+// address: '54:4a:16:1f:b2:2f',
+
 function discover(devices){
     noble.startScanning([SERVICE_UUID]);
     noble.on('discover', function(peripheral) {
         var count = devices.length;
         for(var i = 0;i<count;i++) {
             var device = devices[i];
-            var macAddress = peripheral.uuid;// var rss = peripheral.rssi;
-            var address = peripheral.address;
-            var localName = peripheral.advertisement.localName;
-            if(device.address==device.uuid) {
-                if(localName!="Yeelight Blue II") {
-                    return;
-                }
+            if(device.macAddress==peripheral.address) {
                 device.connectInfo = peripheral;
                 connect(device)
             }
         }
         if(count==0) {
-            var macAddress = peripheral.uuid;// var rss = peripheral.rssi;
+            var id = peripheral.id;
+            var macAddress = peripheral.address;
             var localName = peripheral.advertisement.localName;
-            console.log(localName+"\tmacAddress:"+macAddress);
+            console.log("Discover YeeLight!!  macAddress:"+macAddress+"  id:"+id);
         }
     });
 }
@@ -73,6 +75,7 @@ function connect(device) {
     setTimeout(function(){
         peripheral.connect(function(error){
             if(error){console.log(error);}
+            console.log("Connected YeeLight!!  macAddress:"+peripheral.address);
             peripheral.discoverServices([SERVICE_UUID], function(error, services) {
                 var deviceInformationService = services[0];
                 deviceInformationService.discoverCharacteristics(allServices, function(error, characteristics) {
@@ -84,7 +87,7 @@ function connect(device) {
                 });
             });
         });
-    },300);
+    },200);
 }
 
 /*
