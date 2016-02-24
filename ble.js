@@ -58,7 +58,7 @@ function discover(devices){
             var device = devices[i];
             if(device.macAddress==peripheral.address) {
                 device.connectInfo = peripheral;
-                connect(device)
+                connect(device,peripheral)
             }
         }
         if(count==0) {
@@ -70,8 +70,7 @@ function discover(devices){
     });
 }
 
-function connect(device) {
-    var peripheral = device.connectInfo;
+function connect(device,peripheral) {
     setTimeout(function(){
         peripheral.connect(function(error){
             if(error){console.log(error);}
@@ -79,11 +78,12 @@ function connect(device) {
             peripheral.discoverServices([SERVICE_UUID], function(error, services) {
                 var deviceInformationService = services[0];
                 deviceInformationService.discoverCharacteristics(allServices, function(error, characteristics) {
-                    var device = [];
+                    device.characteristics = [];
+                    var dev = [];
                     for (var i in characteristics) {
-                        device.push(characteristics[i]);
+                        dev.push(characteristics[i]);
                     }
-                    allDevices.push(device);
+                    device.characteristics.push(dev);
                 });
             });
         });

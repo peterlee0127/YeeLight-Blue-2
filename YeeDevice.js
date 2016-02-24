@@ -12,7 +12,7 @@ Yeelight.prototype = {
     color:[255,255,255], // red,green,blue
     brightness:0,
     connected:false,
-    connectInfo:Object,
+    characteristics:[],
 };
 
 module.exports = Yeelight;
