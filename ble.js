@@ -93,17 +93,9 @@ function connect(device,peripheral) {
 
 function readLightInfo(device) {
     var readChar = findForCharacters(device.characteristics, STATUS_RESPONSE_UUID);
-    readChar.read(function(error, data) {
-    // data is a buffer
-        if(error){
-            console.log(error);
-         }
-        if(data) {console.log(data); }
-    });
-
     readChar.on('read', function(data, isNotification) {
         if(data != undefined){
-            console.log('current setting:', data + '%');
+            console.log(data + '%'+"  isNotification:"+isNotification);
         }
     });
 
@@ -113,12 +105,15 @@ function readLightInfo(device) {
         }
     });
 
-    var queryChar=findForCharacters(device.characteristics, STATUS_QUERY_UUID_UUID);
-    queryChar.write(new Buffer('S'), false, function(error) {
-        if(error){
-            console.log(error);
-        }
-    });
+    setTimeout(function(){
+        var queryChar=findForCharacters(device.characteristics, STATUS_QUERY_UUID_UUID);
+        queryChar.write(new Buffer('S'), false, function(error) {
+            if(error){
+                console.log(error);
+            }
+        });
+    },1000);
+
 }
 exports.readLightInfo = readLightInfo;
 
