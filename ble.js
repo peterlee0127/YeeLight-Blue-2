@@ -74,7 +74,7 @@ function connect(device,peripheral) {
     setTimeout(function(){
         peripheral.connect(function(error){
             if(error){console.log(error);}
-            console.log("Connected YeeLight!!  macAddress:"+peripheral.address);
+            console.log("Connected YeeLight!! macAddress:"+peripheral.address);
             peripheral.discoverServices([SERVICE_UUID], function(error, services) {
                 var deviceInformationService = services[0];
                 deviceInformationService.discoverCharacteristics(allServices, function(error, characteristics) {
@@ -83,41 +83,49 @@ function connect(device,peripheral) {
                     for (var i in characteristics) {
                         dev.push(characteristics[i]);
                     }
-                    device.characteristics.push(dev);
+                    device.characteristics = dev;
+                    readLightInfo(device);
                 });
             });
         });
     },200);
 }
 
-/*
-var readChar=findForCharacters(device,STATUS_RESPONSE_UUID);
-readChar.read(function(error, data) {
-// data is a buffer
-    if(error){console.log(error); }
-    if(data) {console.log(data); }
-});
+function readLightInfo(device) {
+    var readChar = findForCharacters(device.characteristics, STATUS_RESPONSE_UUID);
+    readChar.read(function(error, data) {
+    // data is a buffer
+        if(error){
+            console.log(error);
+         }
+        if(data) {console.log(data); }
+    });
 
-readChar.on('read', function(data, isNotification) {
-    if(data != undefined){
-        console.log('current setting:', data + '%');
-    }
-});
+    readChar.on('read', function(data, isNotification) {
+        if(data != undefined){
+            console.log('current setting:', data + '%');
+        }
+    });
 
-readChar.notify(true, function(error) {
-    if(error){
-        console.log(error);
-    }
-});
-var queryChar=findForCharacters(device,STATUS_QUERY_UUID_UUID);
-queryChar.write(new Buffer('S'), false, function(error) {
-    if(error){console.log(error);}
-});
-*/
+    readChar.notify(true, function(error) {
+        if(error){
+            console.log(error);
+        }
+    });
 
-function findForCharacters(characters,Service_UUID){
+    var queryChar=findForCharacters(device.characteristics, STATUS_QUERY_UUID_UUID);
+    queryChar.write(new Buffer('S'), false, function(error) {
+        if(error){
+            console.log(error);
+        }
+    });
+}
+exports.readLightInfo = readLightInfo;
+
+
+function findForCharacters(characters,service_UUID){
     for(index in characters){
-        if(characters[index].uuid==Service_UUID){
+        if(characters[index].uuid==service_UUID){
             return characters[index];
         }
     }
@@ -158,28 +166,28 @@ exports.TurnOn = function turnOn(){
 };
 
 
-    exports.TurnOff = function turnOff(){
-        for(var index in allDevices){
-            var chcharacter=findForCharacters(allDevices[index],CONTROL_UUID);
-            controlLight(chcharacter,null,null,null,0);
-        }
-    };
-
-
-    exports.changeColor = function changeColor(red,green,blue,brightness){
-        for(var index in allDevices){
-            var chcharacter=findForCharacters(allDevices[index],CONTROL_UUID);
-            controlLight(chcharacter,red,green,blue,brightness);
-        }
-    };
-
-
-    function controlLight(characteristics,red,green,blue,brightness){
-        var command = util.format('%d,%d,%d,%d', red, green, blue, brightness);
-        for (var j = command.length; j < 18; j++) {
-            command += ',';
-        }
-        characteristics.write(new Buffer(command), false, function(error) {
-            if(error){console.log(error);}
-        });
+exports.TurnOff = function turnOff(){
+    for(var index in allDevices){
+        var chcharacter=findForCharacters(allDevices[index],CONTROL_UUID);
+        controlLight(chcharacter,null,null,null,0);
     }
+};
+
+
+exports.changeColor = function changeColor(red,green,blue,brightness){
+    for(var index in allDevices){
+        var chcharacter=findForCharacters(allDevices[index],CONTROL_UUID);
+        controlLight(chcharacter,red,green,blue,brightness);
+    }
+};
+
+
+function controlLight(characteristics,red,green,blue,brightness){
+    var command = util.format('%d,%d,%d,%d', red, green, blue, brightness);
+    for (var j = command.length; j < 18; j++) {
+        command += ',';
+    }
+    characteristics.write(new Buffer(command), false, function(error) {
+        if(error){console.log(error);}
+    });
+}
